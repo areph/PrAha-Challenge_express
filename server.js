@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   if (req.get('Content-Type') === "application/json") {
-    return res.send(req.body);
+    return res.status(201).send(req.body);
   }
   return res.sendStatus(400);
 });
