@@ -16,9 +16,9 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   if (req.get('Content-Type') === "application/json") {
-    res.send(req.body);
+    return res.send(req.body);
   }
-  res.sendStatus(400);
+  return res.sendStatus(400);
 });
 
 app.listen(PORT, HOST);
