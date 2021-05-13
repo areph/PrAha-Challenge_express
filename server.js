@@ -15,7 +15,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-  res.send(req.body);
+  if (req.get('Content-Type') === "application/json") {
+    res.send(req.body);
+  }
+  res.sendStatus(400);
 });
 
 app.listen(PORT, HOST);
