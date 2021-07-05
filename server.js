@@ -13,17 +13,10 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.send("{text: hello world}");
-});
-
-app.post("/", (req, res) => {
-  if (req.get("Content-Type") === "application/json") {
-    return res.status(201).send(req.body);
-  }
-  return res.sendStatus(400);
-});
+// use static files
+app.use(express.static("public"));
 
 app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT} ...`);
+console.log(
+  `Running on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT} ...`
+);
