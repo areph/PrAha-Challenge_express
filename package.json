@@ -27,7 +27,10 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
     "*.{js,css,md}": "prettier --write"
   }
 }
