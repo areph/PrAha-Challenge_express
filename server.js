@@ -13,17 +13,20 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// use static files
-app.use(express.static("public"));
 
 // set a cookie
 app.use((req, res, next) => {
-  const cookie_sigunature = req.cookies.signature;
-  if (cookie_sigunature === undefined) {
-    res.cookie('signature', 'meeee!', {maxAge: 1000, httpOnly: true})
+  const sigunature = req.cookies.sigunature;
+  if (sigunature === undefined) {
+    res.cookie("sigunature", "meeee!", { maxAge: 1000, httpOnly: true });
+    console.log("cookie created successfully");
+  } else {
+    console.log("cookie exists");
   }
-  console.log('cookie created successfully')
-})
+  next();
+});
+// use static files
+app.use(express.static("public"));
 
 app.listen(PORT, HOST);
 console.log(
