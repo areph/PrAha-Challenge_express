@@ -8,11 +8,10 @@ const PORT = 8080;
 
 // App
 const app = express();
+const app2 = express();
 
 // use module
 app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // set a cookie
 app.use((req, res, next) => {
@@ -20,14 +19,22 @@ app.use((req, res, next) => {
   if (sigunature === undefined) {
     res.cookie("sigunature", "meeee!", { maxAge: 1000, httpOnly: true });
   } else {
-    console.log("cookie exists");
+    console.log("cookie exists", req.cookies);
   }
   next();
 });
 // use static files
 app.use(express.static("public"));
 
-app.get("/file/:name", (req, res, next) => {
+app.listen(PORT, () =>
+  console.log(
+    `Running on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT} ...`
+  )
+);
+
+// -------------------------------------------------------------------------------------------
+// other express server for 3rd party cookie
+app2.get("/file/:name", (req, res, next) => {
   const fileName = req.params.name;
   const options = {
     // root: path.join(__dirname, 'public'),
@@ -43,8 +50,9 @@ app.get("/file/:name", (req, res, next) => {
     }
   });
 });
-
-app.listen(PORT, HOST);
-console.log(
-  `Running on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT} ...`
+app2.use(express.static("public"));
+app2.listen(8081, () =>
+  console.log(
+    `Running on http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${8081} ...`
+  )
 );
