@@ -19,7 +19,6 @@ app.use((req, res, next) => {
   const sigunature = req.cookies.sigunature;
   if (sigunature === undefined) {
     res.cookie("sigunature", "meeee!", { maxAge: 1000, httpOnly: true });
-    console.log("cookie created successfully");
   } else {
     console.log("cookie exists");
   }
@@ -27,6 +26,23 @@ app.use((req, res, next) => {
 });
 // use static files
 app.use(express.static("public"));
+
+app.get("/file/:name", (req, res, next) => {
+  const fileName = req.params.name;
+  const options = {
+    // root: path.join(__dirname, 'public'),
+    root: __dirname + "/public",
+    dotfiles: "deny",
+    headers: {},
+  };
+  res.sendFile(fileName, options, (err) => {
+    if (err) {
+      next(err);
+    } else {
+      console.log("Sent", fileName);
+    }
+  });
+});
 
 app.listen(PORT, HOST);
 console.log(
