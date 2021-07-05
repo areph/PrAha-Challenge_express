@@ -2,6 +2,8 @@
 
 const express = require("express");
 const helmet = require("helmet");
+const csp = require(`helmet-csp`);
+const cookieParser = require("cookie-parser");
 
 const HOST = "0.0.0.0";
 const PORT = 8080;
@@ -16,13 +18,27 @@ app.use(helmet());
 // set a cookie
 app.use((req, res, next) => {
   const sigunature = req.cookies.sigunature;
-  if (sigunature === undefined) {
-    res.cookie("sigunature", "meeee!", { maxAge: 1000, httpOnly: true });
-  } else {
-    console.log("cookie exists", req.cookies);
-  }
+  res.cookie("sigunature", "meeee!", {
+    domain: ".ngrok.io",
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
   next();
 });
+app.use(
+  csp({
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'", "*.ngrok.io"],
+      scriptSrc: ["'self'", "*.ngrok.io"],
+      imgSrc: ["'self'", "*.ngrok.io"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+    reportOnly: false,
+  })
+);
 // use static files
 app.use(express.static("public"));
 
@@ -42,6 +58,12 @@ app2.get("/file/:name", (req, res, next) => {
     dotfiles: "deny",
     headers: {},
   };
+  res.cookie("3rdParty", "Hi!", {
+    domain: ".ngrok.io",
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
   res.sendFile(fileName, options, (err) => {
     if (err) {
       next(err);
