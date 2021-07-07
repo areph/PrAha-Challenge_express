@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const express = require("express");
-const helmet = require("helmet");
+const express = require('express');
+const helmet = require('helmet');
 
-const HOST = "0.0.0.0";
+const HOST = '0.0.0.0';
 const PORT = 8080;
 
 // App
@@ -14,12 +14,12 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("{text: hello world}");
+app.get('/', (req, res) => {
+  res.send('{text: hello world}');
 });
 
-app.post("/", (req, res) => {
-  if (req.get("Content-Type") === "application/json") {
+app.post('/', (req, res) => {
+  if (req.get('Content-Type') === 'application/json') {
     return res.status(201).send(req.body);
   }
   return res.sendStatus(400);
