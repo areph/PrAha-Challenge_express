@@ -6,8 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Posts</title>
   </head>
-  <body onload="getPosts();">
-    <div id="posts">Loading Posts...</div>
+  <body>
+    <div id="posts">
+      <div class="post" id="postId1">
+        This is the first blog post.<a href="#" onclick="deletePost(1);"
+          >Delete post #1</a
+        >
+      </div>
+      <div class="post" id="postId2">
+        This is the second blog post.<a href="#" onclick="deletePost(2);"
+          >Delete post #2</a
+        >
+      </div>
+      <div class="post" id="postId3">
+        This is the third blog post.<a href="#" onclick="deletePost(3);"
+          >Delete post #3</a
+        >
+      </div>
+    </div>
   </body>
   <script>
     const createXhr = (method, url) => {
@@ -32,36 +48,6 @@
           element.parentNode.removeChild(element);
         }
       };
-      xhr.send();
-    };
-
-    // get Post for api(GET Method)
-    const getPosts = () => {
-      const xhr = createXhr('GET', 'http://localhost:8080/api/posts');
-      xhr.onload = () => {
-        const data = JSON.parse(xhr.responseText);
-        const postsDiv = document.getElementById('posts');
-        postsDiv.innerHTML = '';
-        for (const postId in data) {
-          const div = document.createElement('div');
-          div.className = 'post';
-          div.id = 'postId' + postId;
-          div.innerHTML = data[postId]['post'];
-
-          // delete link for POST
-          const a = document.createElement('a');
-          a.innerHTML = 'Delete post #' + postId;
-          a.href = '#';
-          a.onclick = (function (postId) {
-            return () => {
-              deletePost(postId);
-            };
-          })(postId);
-          div.appendChild(a);
-          postsDiv.appendChild(div);
-        }
-      };
-
       xhr.send();
     };
   </script>

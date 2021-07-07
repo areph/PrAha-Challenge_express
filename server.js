@@ -31,6 +31,7 @@ const corsHandler = (req, res, next) => {
   if (isPreflight(req)) {
     console.log('-- Receive Preflight Request --');
     res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'X-Super-Header');
     res.status(204).end();
     return;
   }
@@ -39,10 +40,6 @@ const corsHandler = (req, res, next) => {
 app.use(corsHandler);
 
 // API
-app.get('/api/posts', (req, res) => {
-  res.json(POSTS);
-});
-
 app.post('/api/posts/:id', (req, res) => {
   const id = req.params['id'];
   delete POSTS[id];
