@@ -18,6 +18,23 @@
       xhr.open(method, url, true);
       return xhr;
     };
+
+    // delete Post for api(POST Method)
+    const deletePost = (postId) => {
+      const xhr = createXhr(
+        'POST',
+        'http://localhost:8080/api/posts/' + postId
+      );
+      xhr.onload = () => {
+        if (xhr.status === 204) {
+          const element = document.getElementById('postId' + postId);
+          element.parentNode.removeChild(element);
+        }
+      };
+      xhr.send();
+    };
+
+    // get Post for api(GET Method)
     const getPosts = () => {
       const xhr = createXhr('GET', 'http://localhost:8080/api/posts');
       xhr.onload = () => {
@@ -27,7 +44,19 @@
         for (const postId in data) {
           const div = document.createElement('div');
           div.className = 'post';
+          div.id = 'postId' + postId;
           div.innerHTML = data[postId]['post'];
+
+          // delete link for POST
+          const a = document.createElement('a');
+          a.innerHTML = 'Delete post #' + postId;
+          a.href = '#';
+          a.onclick = (function (postId) {
+            return () => {
+              deletePost(postId);
+            };
+          })(postId);
+          div.appendChild(a);
           postsDiv.appendChild(div);
         }
       };

@@ -21,7 +21,7 @@ app.use(express.static('public'));
 // CORS settings
 const corsHandler = () => {
   return (req, res, next) => {
-    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Origin', 'http://localhost:8080');
     next();
   };
 };
@@ -30,6 +30,12 @@ app.use(corsHandler());
 // API
 app.get('/api/posts', (req, res) => {
   res.json(POSTS);
+});
+
+app.post('/api/posts/:id', (req, res) => {
+  const id = req.params['id'];
+  delete POSTS[id];
+  res.status(204).end();
 });
 
 app.listen(PORT, HOST);
