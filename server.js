@@ -19,13 +19,24 @@ const app = express();
 app.use(express.static('public'));
 
 // CORS settings
-const corsHandler = () => {
-  return (req, res, next) => {
-    res.set('Access-Control-Allow-Origin', 'http://localhost:8080');
-    next();
-  };
+const isPreflight = (req) => {
+  const isHTTPOptions = req.method === 'OPTIONS';
+  const hasOriginHeader = req.headers['origin'];
+  const hasRequestMethod = req.headers['access-control-request-method'];
+  return isHTTPOptions && hasOriginHeader && hasRequestMethod;
 };
-app.use(corsHandler());
+
+const corsHandler = (req, res, next) => {
+  res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+  if (isPreflight(req)) {
+    console.log('-- Receive Preflight Request --');
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.status(204).end();
+    return;
+  }
+  next();
+};
+app.use(corsHandler);
 
 // API
 app.get('/api/posts', (req, res) => {

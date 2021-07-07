@@ -25,6 +25,7 @@
         'POST',
         'http://localhost:8080/api/posts/' + postId
       );
+      xhr.setRequestHeader('X-Super-Header', 'Yes');
       xhr.onload = () => {
         if (xhr.status === 204) {
           const element = document.getElementById('postId' + postId);
