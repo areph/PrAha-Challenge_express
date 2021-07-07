@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const helmet = require('helmet');
 
 const HOST = '0.0.0.0';
 const PORT = 8080;
@@ -16,10 +15,19 @@ const POSTS = {
 // App
 const app = express();
 
-// use module
-app.use(helmet());
-app.use(express.json());
+// use static files
+app.use(express.static('public'));
 
+// CORS settings
+const corsHandler = () => {
+  return (req, res, next) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    next();
+  };
+};
+app.use(corsHandler());
+
+// API
 app.get('/api/posts', (req, res) => {
   res.json(POSTS);
 });

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts</title>
+  </head>
+  <body onload="getPosts();">
+    <div id="posts">Loading Posts...</div>
+  </body>
+  <script>
+    const createXhr = (method, url) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onerror = () => {
+        document.getElementById('posts').innerHTML = 'ERROR!';
+      };
+      xhr.open(method, url, true);
+      return xhr;
+    };
+    const getPosts = () => {
+      const xhr = createXhr('GET', 'http://localhost:8080/api/posts');
+      xhr.onload = () => {
+        const data = JSON.parse(xhr.responseText);
+        const postsDiv = document.getElementById('posts');
+        postsDiv.innerHTML = '';
+        for (const postId in data) {
+          const div = document.createElement('div');
+          div.className = 'post';
+          div.innerHTML = data[postId]['post'];
+          postsDiv.appendChild(div);
+        }
+      };
+
+      xhr.send();
+    };
+  </script>
+</html>
