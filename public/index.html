@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts</title>
+  </head>
+  <body>
+    <div id="posts">
+      <div class="post" id="postId1">
+        This is the first blog post.<a href="#" onclick="deletePost(1);"
+          >Delete post #1</a
+        >
+      </div>
+      <div class="post" id="postId2">
+        This is the second blog post.<a href="#" onclick="deletePost(2);"
+          >Delete post #2</a
+        >
+      </div>
+      <div class="post" id="postId3">
+        This is the third blog post.<a href="#" onclick="deletePost(3);"
+          >Delete post #3</a
+        >
+      </div>
+    </div>
+  </body>
+  <script>
+    const createXhr = (method, url) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onerror = () => {
+        document.getElementById('posts').innerHTML = 'ERROR!';
+      };
+      xhr.open(method, url, true);
+      return xhr;
+    };
+
+    // delete Post for api(POST Method)
+    const deletePost = (postId) => {
+      const xhr = createXhr(
+        'POST',
+        'http://localhost:8080/api/posts/' + postId
+      );
+      xhr.setRequestHeader('X-Super-Header', 'Yes');
+      xhr.onload = () => {
+        if (xhr.status === 204) {
+          const element = document.getElementById('postId' + postId);
+          element.parentNode.removeChild(element);
+        }
+      };
+      xhr.send();
+    };
+  </script>
+</html>

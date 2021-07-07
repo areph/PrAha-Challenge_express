@@ -1,28 +1,49 @@
 'use strict';
 
 const express = require('express');
-const helmet = require('helmet');
 
 const HOST = '0.0.0.0';
 const PORT = 8080;
 
+// Blog posts
+const POSTS = {
+  1: { post: 'This is the first blog post.' },
+  2: { post: 'This is the second blog post.' },
+  3: { post: 'This is the third blog post.' },
+};
+
 // App
 const app = express();
 
-// use module
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// use static files
+app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-  res.send('{text: hello world}');
-});
+// CORS settings
+const isPreflight = (req) => {
+  const isHTTPOptions = req.method === 'OPTIONS';
+  const hasOriginHeader = req.headers['origin'];
+  const hasRequestMethod = req.headers['access-control-request-method'];
+  return isHTTPOptions && hasOriginHeader && hasRequestMethod;
+};
 
-app.post('/', (req, res) => {
-  if (req.get('Content-Type') === 'application/json') {
-    return res.status(201).send(req.body);
+const corsHandler = (req, res, next) => {
+  res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+  if (isPreflight(req)) {
+    console.log('-- Receive Preflight Request --');
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'X-Super-Header');
+    res.status(204).end();
+    return;
   }
-  return res.sendStatus(400);
+  next();
+};
+app.use(corsHandler);
+
+// API
+app.post('/api/posts/:id', (req, res) => {
+  const id = req.params['id'];
+  delete POSTS[id];
+  res.status(204).end();
 });
 
 app.listen(PORT, HOST);
